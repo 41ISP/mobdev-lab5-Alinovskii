@@ -4,18 +4,20 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { Alert, Button, FlatList, StyleSheet,  Text,  TextInput,  TouchableOpacity, View } from 'react-native';
-
+import { Alert, Button, FlatList, StyleSheet,  Switch,  Text,  TextInput,  TouchableOpacity, View } from 'react-native';
+import { customAlphabet} from 'nanoid/non-secure';
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  
   const [text, setText] = useState("");
-  const [save, setSave] = useState([]);
+  const nanoid = customAlphabet("adcdefghijklmnopqrstuvwxyz0123456789",10)
   const handleclick = () => { 
- Alert.alert(text)
-
+    setTasks([
+      ...tasks,
+      {id: nanoid(), text: text, state: false}
+    ])
   }
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
@@ -29,26 +31,33 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
-
+  
   const contacts = [
     {
-        id: '1',       
+      text: "123",
+      id: nanoid(),
+      state: false      
     }, 
 ]
+const handleSubmit = () => {
+
+}
+const handledelete = (id: string) => {
+  setTasks(tasks.filter((text) => text.id !== id))
+}
+const [tasks, setTasks] = useState([...contacts])
   return (
     <View style={styles.view}>
-      <TextInput value={text} onChangeText={setText}  placeholder= "Напишите текст" style={styles.input}></TextInput>
+      <TextInput value={text} onChangeText={setText} onSubmitEditing={handleSubmit} placeholder= "Напишите текст" style={styles.input}></TextInput>
       <TouchableOpacity onPress={handleclick} style={styles.button}><Text>Ответ</Text></TouchableOpacity>
-      <FlatList
-                data={contacts} 
-                keyExtractor={(item) => item.id} 
-                renderItem={(
-                ) => (
-                    <View >                   
-                            <Text>{save}</Text>    
-                    </View>
-                )}
-            />
+      <FlatList  data={tasks} keyExtractor={(item) => item.id} renderItem={(
+              {item},
+            ) => (
+              <View>  
+                <Text>{item.text}</Text>
+                <TouchableOpacity onPress={() => handledelete(item.id)} style={styles.button}><Text>Удалить</Text></TouchableOpacity>
+              </View>
+            )}/>
     </View>
     
   );
