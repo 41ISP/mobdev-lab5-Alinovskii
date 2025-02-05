@@ -4,23 +4,22 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { StyleSheet,  Text,  TouchableOpacity, View } from 'react-native';
-
+import { Alert, Button, FlatList, StyleSheet,  Text,  TextInput,  TouchableOpacity, View } from 'react-native';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const [counter, setCounter] = useState(0);
+  const [text, setText] = useState("");
+  const [save, setSave] = useState([]);
+  const handleclick = () => { 
+ Alert.alert(text)
 
+  }
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
-  const handleclick = () => {
-    setCounter((value) => value + 1);
-  }
-
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
@@ -31,29 +30,55 @@ export default function RootLayout() {
     return null;
   }
 
+  const contacts = [
+    {
+        id: '1',       
+    }, 
+]
   return (
-
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <View style={styles.container}>
-        <TouchableOpacity onPress={handleclick}>
-          <Text style={{padding: 50}}>-</Text>
-        </TouchableOpacity>
-        <Text style={styles.text}>
-          {counter}
-        </Text>
-      </View>
-    </ThemeProvider>
+    <View style={styles.view}>
+      <TextInput value={text} onChangeText={setText}  placeholder= "Напишите текст" style={styles.input}></TextInput>
+      <TouchableOpacity onPress={handleclick} style={styles.button}><Text>Ответ</Text></TouchableOpacity>
+      <FlatList
+                data={contacts} 
+                keyExtractor={(item) => item.id} 
+                renderItem={(
+                ) => (
+                    <View >                   
+                            <Text>{save}</Text>    
+                    </View>
+                )}
+            />
+    </View>
+    
   );
 }
-
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 100,
-    flexDirection: "row",
-  },
-  text: {
-    fontSize: 30,
-    color: "#ff0000",
-  }
+    input: {
+      justifyContent: "center",
+      borderWidth: 1,
+      borderColor: "#000000",
+       color: "#ff0000",
+       width: 150,
+       height: 40,
+     },
+     view: {
+      justifyContent: "center",
+      alignItems: 'center',
+     },
+     button : {
+      width: 150,
+      height: 20,
+      borderWidth: 1,
+      borderColor: "#000000",
+      alignContent: "center",
+      alignItems: "center",
+     },
+     text: {
+      width:50,
+      height: 50,
+      color: "#ff0000",
+     }
+   });
 
-});
+
