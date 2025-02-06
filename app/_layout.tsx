@@ -12,6 +12,8 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   
   const [text, setText] = useState("");
+  const [isEnabled, setiIsEnable] = useState(false)
+  const toggleSwitch  = () => setiIsEnable ((text) => !text)
   const nanoid = customAlphabet("adcdefghijklmnopqrstuvwxyz0123456789",10)
   const handleclick = () => { 
     setTasks([
@@ -55,9 +57,18 @@ const [tasks, setTasks] = useState([...contacts])
             ) => (
               <View>  
                 <Text>{item.text}</Text>
-                <TouchableOpacity onPress={() => handledelete(item.id)} style={styles.button}><Text>Удалить</Text></TouchableOpacity>
+                <TouchableOpacity onPress={() => handledelete(item.id)} style={styles.deleted}><Text>Удалить</Text></TouchableOpacity>
               </View>
             )}/>
+      <View style={styles.switcha}>
+      <Text style={styles.text}>Согласен с условиями:</Text>
+      <Switch 
+      value={isEnabled}
+        onValueChange={toggleSwitch} 
+        thumbColor={isEnabled ? '#4CAF50' : '#f4f3f4'} 
+        trackColor={{ false: '#767577', true: '#81b0ff' }} 
+      />
+    </View>
     </View>
     
   );
@@ -83,10 +94,21 @@ const styles = StyleSheet.create({
       alignContent: "center",
       alignItems: "center",
      },
+     deleted: {
+      width: 50,
+      height: 50,
+     },
      text: {
-      width:50,
+      width: 150,
       height: 50,
       color: "#ff0000",
+      justifyContent: "center",
+      alignItems: "center",
+     }, 
+     switcha: {
+      width: 50,
+      height: 50,
+      color: "#ffa500",
      }
    });
 
