@@ -49,26 +49,27 @@ const handledelete = (id: string) => {
 }
 const [tasks, setTasks] = useState([...contacts])
   return (
-    <View style={styles.view}>
+    <View style={styles.view} >
       <TextInput value={text} onChangeText={setText} onSubmitEditing={handleSubmit} placeholder= "Напишите текст" style={styles.input}></TextInput>
       <TouchableOpacity onPress={handleclick} style={styles.button}><Text>Ответ</Text></TouchableOpacity>
       <FlatList  data={tasks} keyExtractor={(item) => item.id} renderItem={(
               {item},
             ) => (
-              <View>  
-                <Text>{item.text}</Text>
+              <View  style={styles.grid}>  
+                <Text >{item.text}</Text>
                 <TouchableOpacity onPress={() => handledelete(item.id)} style={styles.deleted}><Text>Удалить</Text></TouchableOpacity>
+                <View style={styles.switcha}>
+    
+    <Switch 
+    value={isEnabled}
+      onValueChange={toggleSwitch} 
+      thumbColor={isEnabled ? '#4CAF50' : '#f4f3f4'} 
+      trackColor={{ false: '#767577', true: '#81b0ff' }} 
+    />
+  </View>
               </View>
             )}/>
-      <View style={styles.switcha}>
-      <Text style={styles.text}>Согласен с условиями:</Text>
-      <Switch 
-      value={isEnabled}
-        onValueChange={toggleSwitch} 
-        thumbColor={isEnabled ? '#4CAF50' : '#f4f3f4'} 
-        trackColor={{ false: '#767577', true: '#81b0ff' }} 
-      />
-    </View>
+      
     </View>
     
   );
@@ -95,8 +96,12 @@ const styles = StyleSheet.create({
       alignItems: "center",
      },
      deleted: {
-      width: 50,
-      height: 50,
+      alignContent: "center",
+      alignItems: "center",
+      width: 70,
+      height: 35,
+      borderWidth: 1,
+      borderColor: "#000000",
      },
      text: {
       width: 150,
@@ -107,8 +112,11 @@ const styles = StyleSheet.create({
      }, 
      switcha: {
       width: 50,
-      height: 50,
+      height: 35,
       color: "#ffa500",
+     },
+     grid: {
+      flexDirection:'row'
      }
    });
 
