@@ -9,17 +9,31 @@ import { customAlphabet} from 'nanoid/non-secure';
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+interface ITask {
+  text: string,
+  id: string,
+  state: boolean
+}
+
 export default function RootLayout() {
-  
-  const [text, setText] = useState("");
-  const [isEnabled, setiIsEnable] = useState(false)
-  const toggleSwitch  = () => setiIsEnable ((text) => !text)
   const nanoid = customAlphabet("adcdefghijklmnopqrstuvwxyz0123456789",10)
+  const [text, setText] = useState("");
+  const initialTasks = [
+    {
+      text: "123",
+      id: nanoid(),
+      state: false      
+    }, 
+  ] as ITask[]
+  const [tasks, setTasks] = useState<ITask[]>([...initialTasks])
+  const toggleSwitch  = (id:string) => setTasks((state) => state.map((task)=> task.id === id ? {...task, state: !task.state}: task))
   const handleclick = () => { 
+    if(text.length >= 1 && text.trim()){
     setTasks([
       ...tasks,
       {id: nanoid(), text: text, state: false}
     ])
+  }
   }
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
@@ -34,36 +48,39 @@ export default function RootLayout() {
     return null;
   }
   
-  const contacts = [
-    {
-      text: "123",
-      id: nanoid(),
-      state: false      
-    }, 
-]
-const handleSubmit = () => {
 
-}
 const handledelete = (id: string) => {
   setTasks(tasks.filter((text) => text.id !== id))
 }
-const [tasks, setTasks] = useState([...contacts])
+
+const handleChange = (e: string) => {
+  if(text.length <= 15){
+    setText(e)
+  }
+  else
+  {
+    setText(state => state.slice(0, 15))
+    Alert.alert("Ошибка, Запрос привысил 15 символов!!!")
+  }
+
+}
+
   return (
     <View style={styles.view} >
-      <TextInput value={text} onChangeText={setText} onSubmitEditing={handleSubmit} placeholder= "Напишите текст" style={styles.input}></TextInput>
+      <TextInput value={text} onChangeText={handleChange} placeholder= "Напишите текст" style={styles.input}></TextInput>
       <TouchableOpacity onPress={handleclick} style={styles.button}><Text>Ответ</Text></TouchableOpacity>
       <FlatList  data={tasks} keyExtractor={(item) => item.id} renderItem={(
               {item},
             ) => (
               <View  style={styles.grid}>  
-                <Text >{item.text}</Text>
+                <Text style={styles.text} >{item.text}</Text>
                 <TouchableOpacity onPress={() => handledelete(item.id)} style={styles.deleted}><Text>Удалить</Text></TouchableOpacity>
                 <View style={styles.switcha}>
     
     <Switch 
-    value={isEnabled}
-      onValueChange={toggleSwitch} 
-      thumbColor={isEnabled ? '#4CAF50' : '#f4f3f4'} 
+    value={item.state} 
+      onValueChange={() => toggleSwitch(item.id)} 
+      thumbColor={item.state ? '#4CAF50' : '#f4f3f4'} 
       trackColor={{ false: '#767577', true: '#81b0ff' }} 
     />
   </View>
@@ -104,7 +121,7 @@ const styles = StyleSheet.create({
       borderColor: "#000000",
      },
      text: {
-      width: 150,
+      width: 50,
       height: 50,
       color: "#ff0000",
       justifyContent: "center",
@@ -116,7 +133,9 @@ const styles = StyleSheet.create({
       color: "#ffa500",
      },
      grid: {
-      flexDirection:'row'
+      flexDirection:'row',
+      justifyContent: "center",
+      alignItems: "center",
      }
    });
 
