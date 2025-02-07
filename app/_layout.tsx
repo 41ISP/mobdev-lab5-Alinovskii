@@ -18,6 +18,7 @@ interface ITask {
 export default function RootLayout() {
   const nanoid = customAlphabet("adcdefghijklmnopqrstuvwxyz0123456789",10)
   const [text, setText] = useState("");
+  
   const initialTasks = [
     {
       text: "123",
@@ -25,7 +26,11 @@ export default function RootLayout() {
       state: false      
     }, 
   ] as ITask[]
+
   const [tasks, setTasks] = useState<ITask[]>([...initialTasks])
+  const [filteredTasks, setFilteredTasks] = useState<ITask[]>(tasks)
+  const [switchTasks, setSwitchTasks] = useState<boolean>(true || false)
+  
   const toggleSwitch  = (id:string) => setTasks((state) => state.map((task)=> task.id === id ? {...task, state: !task.state}: task))
   const handleclick = () => { 
     if(text.length >= 1 && text.trim()){
@@ -69,7 +74,7 @@ const handleChange = (e: string) => {
     <View style={styles.view} >
       <TextInput value={text} onChangeText={handleChange} placeholder= "Напишите текст" style={styles.input}></TextInput>
       <TouchableOpacity onPress={handleclick} style={styles.button}><Text>Ответ</Text></TouchableOpacity>
-      <FlatList  data={tasks} keyExtractor={(item) => item.id} renderItem={(
+      <FlatList  data={tasks.filter(task => task.state)} keyExtractor={(item) => item.id} renderItem={(
               {item},
             ) => (
               <View  style={styles.grid}>  
