@@ -6,35 +6,22 @@ import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Alert, Button, FlatList, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { customAlphabet } from 'nanoid/non-secure';
+import Store from '@/Store';
+import { ITask } from '@/Store';
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-interface ITask {
-  text: string,
-  id: string,
-  state: boolean
-}
 
 export default function RootLayout() {
   const nanoid = customAlphabet("adcdefghijklmnopqrstuvwxyz0123456789", 10)
   const [text, setText] = useState("");
-
-  const initialTasks = [
-    {
-      text: "123",
-      id: nanoid(),
-      state: false
-    },
-  ] as ITask[]
-
-  const [tasks, setTasks] = useState<ITask[]>([...initialTasks])
   const [filteredTasks, setFilteredTasks] = useState<ITask[]>(tasks)
   const [switchTasks, setSwitchTasks] = useState(false)
-
-  const toggleSwitch = (id: string) => setTasks((state) => state.map((task) => task.id === id ? { ...task, state: !task.state } : task))
+  
+  //const toggleSwitch = (id: string) => setTasks((state) => state.map((task) => task.id === id ? { ...task, state: !task.state } : task))
   const handleclick = () => {
     if (text.length >= 1 && text.trim()) {
-      setTasks([
+      ([
         ...tasks,
         { id: nanoid(), text: text, state: false }
       ])
